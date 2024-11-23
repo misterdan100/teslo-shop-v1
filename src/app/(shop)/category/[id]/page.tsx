@@ -1,5 +1,16 @@
+import { notFound } from "next/navigation"
 
-export default function CategoryPage({params}: {params: {id: string}}) {
+interface Props {
+  params: {
+    id: string
+  }
+}
+
+export default function CategoryPage({params}: Props) {
+  const { id } = params
+  const allowedCategories = ['kids', 'men', 'women']
+
+  if(!allowedCategories.includes(id) ) notFound()
 
   return (
     <div>
