@@ -1,21 +1,42 @@
-import { notFound } from "next/navigation"
+import { ProductGrid, Title } from "@/components";
+import { ValidCategories } from "@/interfaces";
+import { initialData } from "@/seed/seed";
+import { notFound } from "next/navigation";
 
 interface Props {
   params: {
-    id: string
-  }
+    id: ValidCategories;
+  };
 }
 
-export default function CategoryPage({params}: Props) {
-  const { id } = params
-  const allowedCategories = ['kids', 'men', 'women']
+export default function CategoryPage({ params }: Props) {
+  const { id } = params;
+  const allowedCategories: ValidCategories[] = ["kid", "men", "women", 'unisex'];
 
-  if(!allowedCategories.includes(id) ) notFound()
+  // check if id url is allowed
+  if (!allowedCategories.includes(id)) notFound();
+
+  // label to the subtitle depending of id param
+  const labels: Record<ValidCategories, string> = {
+    kid: 'kids', 
+    men: 'men', 
+    women: 'women', 
+    unisex: 'unisex', 
+  }
+
+  const filteredProductsById = initialData.products.filter(
+    (product) => product.gender === id
+  );
 
   return (
-    <div>
-      <h1>Category Page</h1>
-      {params.id}
-    </div>
+    <>
+      <Title
+        title={id}
+        subtitle={`Products for ${labels[id]}`}
+        className="capitalize"
+      />
+
+      <ProductGrid products={filteredProductsById} />
+    </>
   );
 }
