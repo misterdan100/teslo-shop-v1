@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:15.3
+    environment:    # to config this postgres image
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:        # valumes is like hard disk to store de postgres db
+      - ./postgres:/var/lib/postgresql/data # "folder_in_project":"folder_in_container"
+    ports:
+      - 5432:5432
