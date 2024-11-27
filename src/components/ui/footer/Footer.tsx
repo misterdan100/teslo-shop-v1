@@ -1,6 +1,5 @@
 import { titleFont } from "@/config/fonts"
 import Link from "next/link"
-import { title } from "process"
 
 export const Footer = () => {
   

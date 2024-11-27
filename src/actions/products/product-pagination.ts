@@ -1,24 +1,33 @@
 'use server'
 
 import prisma from "@/lib/prisma"
+import { Gender } from "@prisma/client"
 
 interface PaginationOptions {
     page?: number
     take?: number
+    gender?: Gender
 }
 
-export const getPaginatedProductsWithImages = async ({page = 1, take = 12} : PaginationOptions) => {
+export const getPaginatedProductsWithImages = async ({page = 1, take = 12, gender} : PaginationOptions) => {
     try {
-
         // Validate params
         if(isNaN(Number(page))) page = 1
         if(page < 1) page = 1
         if(isNaN(Number(take))) take = 12
         if(take < 1) take = 1
 
-        const optionToSearchProductus = {
+        const paginatedOptions = {
             take,
             skip: (page - 1) * take,
+        }
+
+        const filterOptions: {} = gender ? {
+            where: {gender}
+        } : {}
+
+
+        const optionToSearchProductus = {
             include: {
                 ProductImage: {
                     select: {
@@ -26,11 +35,13 @@ export const getPaginatedProductsWithImages = async ({page = 1, take = 12} : Pag
                     }
                 }
             },
+            ...paginatedOptions,
+            ...filterOptions
         }
 
         const [ products, totalCount, categories] = await Promise.all([
             prisma.product.findMany(optionToSearchProductus),
-            prisma.product.count(),
+            prisma.product.count(filterOptions),
             prisma.category.findMany()
         ])
 
