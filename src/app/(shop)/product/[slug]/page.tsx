@@ -1,7 +1,11 @@
-import { ProductMobileSlideShow, ProductSlideShow, QuantitySelector, SizeSelector } from "@/components";
+import { getProductBySlug, getStockBySlug } from "@/actions";
+import { ProductMobileSlideShow, ProductSlideShow, QuantitySelector, SizeSelector, StockLabel } from "@/components";
 import { titleFont } from "@/config/fonts";
-import { initialData } from "@/seed/seed";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { title } from "process";
+
+export const revalidate = 604800 // 7 dias
 
 interface Props {
   params: {
@@ -9,10 +13,27 @@ interface Props {
   }
 }
 
-export default function ProductByIdPage({params}: Props) {
+export const generateMetadata = async ({params}: Props): Promise<Metadata> => {
+  const { slug } = params
+  const product = await getProductBySlug( slug )
+
+
+  return {
+    title: `${product?.title} - Teslo | Shop`,
+    description: product?.description,
+    openGraph: {
+      images: [`/products/${product?.images[1]}`],
+      title: `${product?.title} - Teslo | Shop`,
+      description: product?.description,
+    }
+  }
+}
+
+export default async function ProductByIdPage({params}: Props) {
   const { slug } = params
 
-  const product = initialData.products.find(product => product.slug === slug)
+  const product = await getProductBySlug( slug )
+
 
   if(!product) notFound()
 
@@ -38,6 +59,10 @@ export default function ProductByIdPage({params}: Props) {
 
       {/* Details */}
         <div className="col-span-1 px-5">
+          <StockLabel 
+            slug={product.slug}
+          />
+
           <h1 className={`${titleFont.className} antialiased font-bold text-2xl`}
           >{product.title}</h1>
 
@@ -58,7 +83,8 @@ export default function ProductByIdPage({params}: Props) {
 
           {/* Button add to cart */}
           <button
-            className="btn-primary my-5"
+            disabled={!!(product.inStock === 0)}
+            className="btn-primary my-5 disabled:opacity-25 disabled:bg-blue-600"
           >Add to cart</button>
 
 

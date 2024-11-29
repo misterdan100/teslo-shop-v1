@@ -1,8 +1,14 @@
 import { getPaginatedProductsWithImages } from '@/actions'
 import { Pagination, ProductGrid, Title } from '@/components'
+import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
 export const revalidate = 60
+
+export const metadata: Metadata = {
+  title: 'Home - Teslo | Shop',
+  description: 'Tech Clothes E-commerce'
+}
 
 interface Props {
   searchParams: {
