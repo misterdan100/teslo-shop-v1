@@ -3,6 +3,7 @@ import { initialData } from "@/seed/seed";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ProductsInCart } from "./ui/ProductsInCart";
 
 const productsInCart = [
   initialData.products[0],
@@ -29,30 +30,8 @@ export default function CartPage() {
             </Link>
 
             {/* Cart Items */}
-            {productsInCart.map((product) => (
-              <div key={product.slug} className="flex mb-5">
-                <Image
-                  src={`/products/${product.images[0]}`}
-                  width={100}
-                  height={100}
-                  alt={product.title}
-                  style={{
-                    width: '100px',
-                    height: '100px'
-                  }}
-                  className="mr-5 rounded"
-                />
-
-                <div>
-                  <p>{product.title}</p>
-                  <p>$ {product.price}</p>
-                  <QuantitySelector quantity={1} />
-
-                  <button className="underline mt-3">Remove</button>
-                </div>
-              </div>
-            ))}
-          </div>
+            <ProductsInCart />
+            </div>
 
           {/* Summary / Checkout */}
           <div className="bg-white rounded-xl shadow-xl p-7 self-start">

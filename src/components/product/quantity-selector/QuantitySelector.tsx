@@ -5,36 +5,38 @@ import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5"
 
 interface Props {
     quantity: number
+
+    onQuantityChanged: (quantity: number) => void
 }
 
-export const QuantitySelector = ({ quantity }: Props) => {
-const [count, setCount] = useState(quantity)
+export const QuantitySelector = ({ quantity,  onQuantityChanged}: Props) => {
 
-const onQuantityChanged = ( value: number) => {
 
-    if( count + value < 1) return
-    if( count + value > 5) return
+const onValueChanged = ( value: number) => {
 
-    setCount(count + value)
+    if( quantity + value < 1) return
+    if( quantity + value > 5) return
+
+    onQuantityChanged(quantity + value)
 }
   
   
   return (
     <div className="flex ">
         <button
-            onClick={() => onQuantityChanged(-1)}
-            disabled={count === 1}
-            className={`${count === 1 ? 'text-gray-400' : ''}`}
+            onClick={() => onValueChanged(-1)}
+            disabled={quantity === 1}
+            className={`${quantity === 1 ? 'text-gray-400' : ''}`}
             >
             <IoRemoveCircleOutline size={30} />
             
         </button>
 
-        <span className="w-20 mx-2 px-5 py-2 bg-gray-200 text-center rounded-md flex justify-center items-center font-bold text-md"><span>{count}</span></span>
+        <span className="w-20 mx-2 px-5 py-2 bg-gray-200 text-center rounded-md flex justify-center items-center font-bold text-md"><span>{quantity}</span></span>
         <button
-            onClick={() => onQuantityChanged(1)}
-            disabled={count === 5}
-            className={`${count === 5 ? 'text-gray-400' : ''}`}
+            onClick={() => onValueChanged(1)}
+            disabled={quantity === 5}
+            className={`${quantity === 5 ? 'text-gray-400' : ''}`}
             >
             <IoAddCircleOutline size={30} />
         </button>

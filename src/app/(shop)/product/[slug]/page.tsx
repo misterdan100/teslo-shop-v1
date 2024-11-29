@@ -4,6 +4,7 @@ import { titleFont } from "@/config/fonts";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { title } from "process";
+import { AddToCart } from "./ui/AddToCart";
 
 export const revalidate = 604800 // 7 dias
 
@@ -21,11 +22,11 @@ export const generateMetadata = async ({params}: Props): Promise<Metadata> => {
   return {
     title: `${product?.title} - Teslo | Shop`,
     description: product?.description,
-    openGraph: {
-      images: [`/products/${product?.images[1]}`],
-      title: `${product?.title} - Teslo | Shop`,
-      description: product?.description,
-    }
+    // openGraph: {
+      // images: [`/products/${product?.images[1]}`],
+      // title: `${product?.title} - Teslo | Shop`,
+      // description: product?.description,
+    // }
   }
 }
 
@@ -68,24 +69,9 @@ export default async function ProductByIdPage({params}: Props) {
 
           <p className="text-lg mb-5 font-semibold">$ {product.price}</p>
 
-          {/* Select Sizes */}
-          <SizeSelector 
-            selectedSize={product.sizes[0]}
-            availableSizes={product.sizes}
+          <AddToCart 
+            product={product}
           />
-
-
-
-          {/* Select quantity */}
-          <QuantitySelector quantity={2}/>
-
-
-
-          {/* Button add to cart */}
-          <button
-            disabled={!!(product.inStock === 0)}
-            className="btn-primary my-5 disabled:opacity-25 disabled:bg-blue-600"
-          >Add to cart</button>
 
 
           {/* Description  */}
