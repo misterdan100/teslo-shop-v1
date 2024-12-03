@@ -1,19 +1,9 @@
-import { QuantitySelector, Title } from "@/components";
-import { initialData } from "@/seed/seed";
-import Image from "next/image";
+import { Title } from "@/components";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { ProductsInCart } from "./ui/ProductsInCart";
-
-const productsInCart = [
-  initialData.products[0],
-  initialData.products[1],
-  initialData.products[2],
-];
+import { OrderSummary } from "./ui/OrderSummary";
 
 export default function CartPage() {
-
-  if(!productsInCart.length) redirect('/empty')
 
 
   return (
@@ -37,22 +27,7 @@ export default function CartPage() {
           <div className="bg-white rounded-xl shadow-xl p-7 self-start">
             <h2 className="text-2xl mb-2 font-semibold">Order Summary</h2>
 
-            <div className="grid grid-cols-2">
-              <span>No. Products</span>
-              <span className="text-right">3 articles</span>
-
-              <span>Subtotal</span>
-              <span className="text-right">$ 100</span>
-
-              <span>Taxes (15%)</span>
-              <span className="text-right">$ 100</span>
-
-              <span className="mt-5 text-2xl font-semibold">Total: </span>
-              <span className="text-right mt-5 text-2xl font-semibold">$ 200</span>
-
-
-
-            </div>
+            <OrderSummary />
 
             <div className="mt-5 mb-2 w-full">
               <Link 

@@ -12,6 +12,7 @@ export const ProductsInCart = () => {
 
   const productsInCart = useCartStore((state) => state.cart);
   const updateProductQuantity = useCartStore((state) => state.updateProductQuantity);
+  const removeProduct = useCartStore( state => state.removeProduct)
 
   useEffect(() => {
     setLoaded(true);
@@ -44,13 +45,16 @@ export const ProductsInCart = () => {
 
             <div>
               <Link href={`/product/${product.slug}`}>{`${product.size} - ${product.title}`}</Link>
-              <p>$ {product.price}</p>
+              <p>$ {product.price.toFixed(2)}</p>
               <QuantitySelector
                 quantity={product.quantity}
                 onQuantityChanged={(value) => handleQuantity(product, value)}
               />
 
-              <button className="underline mt-3">Remove</button>
+              <button 
+                className="underline mt-3"
+                onClick={() => removeProduct(product)}
+              >Remove</button>
             </div>
           </div>
         ))}

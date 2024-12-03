@@ -6,9 +6,16 @@ interface State {
     cart: CartProduct[]
 
     getTotalItems: () => number
+    getSummaryInformation: () => {
+        subTotal: number;
+        tax: number;
+        total: number;
+        itemsInCart: number;
+    }
 
     addProductToCart: (product: CartProduct) => void
     updateProductQuantity: (product: CartProduct) => void
+    removeProduct: (product: CartProduct) => void
 }
 
 export const useCartStore = create<State>()(
@@ -25,19 +32,27 @@ export const useCartStore = create<State>()(
                 return cart.reduce( ( total, item ) => total + item.quantity, 0)
             },
 
-            updateProductQuantity: (product: CartProduct) => {
+            getSummaryInformation: () => {
+                const { cart } = get()
 
-                // if quantity is 1 => delete product from cart
-                if(product.quantity === 0) {
-                    const updatedCart = get().cart.filter( item => !(item.id === product.id && item.size === product.size))
-                    set({
-                        cart: updatedCart
-                    })
+                const subTotal = cart.reduce( (total, item) => total + (item.price * item.quantity), 0)
 
-                    return
+                const tax = subTotal * 0.15
+                const total = subTotal + tax
+                const itemsInCart = cart.reduce( ( total, item ) => total + item.quantity, 0)
+
+                return {
+                    subTotal,
+                    tax,
+                    total,
+                    itemsInCart
                 }
+            },
 
-                const updatedCart = get().cart.map( item => {
+            updateProductQuantity: (product: CartProduct) => {
+                const { cart } = get()
+
+                const updatedCart = cart.map( item => {
                     if(item.id === product.id && item.size === product.size) {
                         item.quantity = product.quantity
                         return item
@@ -50,8 +65,6 @@ export const useCartStore = create<State>()(
                 })
 
             },
-
-    
             addProductToCart: (product: CartProduct) => {
                 const { cart } = get()
     
@@ -79,14 +92,22 @@ export const useCartStore = create<State>()(
                 set({
                     cart: updatedCartProducts
                 })
+            },
+            removeProduct: (product: CartProduct) => {
+                const { cart } = get()
+
+                const updatedCart = cart.filter( item => {
+                    if(!(item.id === product.id && item.size === product.size)) return item
+                })
+
+                set({
+                    cart: updatedCart
+                })
             }
         })
-
         ,
         {
             name: 'shopping-cart',
         }
-    )
-
-    
+    )   
 )
