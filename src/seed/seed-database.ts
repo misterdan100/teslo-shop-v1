@@ -5,11 +5,15 @@ async function main() {
   // 1. Clean previous data in db
   await Promise.all([
     prisma.productImage.deleteMany(),
-    prisma.category.deleteMany(),
     prisma.product.deleteMany(),
+    prisma.category.deleteMany(),
+    prisma.user.deleteMany(),
   ]);
 
-  const { categories, products } = initialData;
+  const { categories, products, users } = initialData;
+
+  // 2.1 Insert users 
+  await prisma.user.createMany({data: users})
 
   // 2. Insert categories
   const categoriesData = categories.map((category) => ({ name: category }));

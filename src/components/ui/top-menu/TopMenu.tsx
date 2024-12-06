@@ -3,7 +3,7 @@
 import { titleFont } from "@/config/fonts"
 import { useCartStore, useUIStore } from "@/store"
 import Link from "next/link"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5"
 
 
@@ -12,10 +12,14 @@ export const TopMenu = () => {
     const getTotalItems = useCartStore( state => state.getTotalItems())
 
     const [loaded, setLoaded] = useState(false)
+    const [fontClass, setFontClass] = useState('')
 
     useEffect(() =>{
         setLoaded(true)
-    },)
+
+        setFontClass(titleFont.className)
+
+    },[])
 
   return (
     <nav 
@@ -26,7 +30,11 @@ export const TopMenu = () => {
             <Link
                 href='/'
             >
-                <span className={`${titleFont.className} antialiased font-bold`}>Teslo</span>
+                <span 
+                    className={`${fontClass} antialiased font-bold`}
+                >
+                    Teslo
+                </span>
                 <span> | Shop</span>
             </Link>
         </div>

@@ -8,6 +8,5 @@ export const capitalizeWords = (word: string) => {
 
         return array.join('')
     })
-    console.log(capitlizedArray)
     return capitlizedArray.join(' ')
 }

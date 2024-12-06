@@ -1,9 +1,8 @@
-import { getProductBySlug, getStockBySlug } from "@/actions";
-import { ProductMobileSlideShow, ProductSlideShow, QuantitySelector, SizeSelector, StockLabel } from "@/components";
+import { getProductBySlug } from "@/actions";
+import { ProductMobileSlideShow, ProductSlideShow, StockLabel } from "@/components";
 import { titleFont } from "@/config/fonts";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { title } from "process";
 import { AddToCart } from "./ui/AddToCart";
 
 export const revalidate = 604800 // 7 dias
