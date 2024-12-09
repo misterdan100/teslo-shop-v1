@@ -1,10 +1,21 @@
 import { Title } from '@/components';
 import { AddressForm } from './ui/AddressForm';
 import prisma from '@/lib/prisma';
-import { getCountries } from '@/actions';
+import { getCountries, getUserAddress } from '@/actions';
+import { auth } from '@/auth.config';
 
 export default async function AddressPage() {
   const countries = await getCountries()
+
+  const session = await auth()
+
+  if( !session?.user ) {
+    return <h3 
+      className='text-5xl'
+    >500 - There are not user session.</h3>
+  }
+
+  const address = await getUserAddress( session!.user.id ) ?? undefined
   
 
   return (
@@ -18,6 +29,7 @@ export default async function AddressPage() {
 
         <AddressForm 
           countries={countries}
+          userStoreAddress={address}
         />
 
       </div>

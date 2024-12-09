@@ -1,15 +1,21 @@
 "use client";
 
-import { Country } from "@/interfaces";
+import { deleteUserAddress, setUserAddress } from "@/actions";
+import { Address, Country } from "@/interfaces";
 import { useAddressStore } from "@/store";
 
 
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 interface Props {
   countries: Country[]
+  // Partiaal<> make all Addresses properties as optional ?
+  userStoreAddress?: Partial<Address>
+
 }
 
 interface FormInputs {
@@ -24,17 +30,22 @@ interface FormInputs {
     rememberAddress: boolean
 }
 
-export const AddressForm = ({ countries }: Props) => {
-  const [remeber, setRemeber] = useState(false)
+export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
+  const router = useRouter()
   const address = useAddressStore( state => state.address)
   const setAddress = useAddressStore( state => state.setAddress)
 
 
   const { register, handleSubmit, formState: {isValid, errors}, reset } = useForm<FormInputs>({
       defaultValues: {
-
+        ...(userStoreAddress as any),
+        country: userStoreAddress.country,
+        rememberAddress: false
       }
   })
+
+  // get userId
+  const { data: session } = useSession({ required: true })
 
   useEffect(() => {
     if(address.firstName) {
@@ -42,9 +53,17 @@ export const AddressForm = ({ countries }: Props) => {
     }
   }, [])
 
-  const onSubmit = ( data: FormInputs ) => {
-
+  const onSubmit = async ( data: FormInputs ) => {
       setAddress(data)
+      const { rememberAddress, ...rest } = data
+
+      if( data.rememberAddress ) {
+        await setUserAddress( rest, session!.user.id)
+      } else {
+        await deleteUserAddress( session!.user.id)
+      }
+
+      router.push('/checkout')
   }
 
   return (
@@ -143,7 +162,7 @@ export const AddressForm = ({ countries }: Props) => {
               type="checkbox"
               className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-blue-500 hover:before:opacity-10 border-gray-500"
               id="checkbox"
-              checked={remeber}
+              // checked={remeber}
               // onChange={() => setRemeber(!remeber)}
               {...register("rememberAddress") }
             />
