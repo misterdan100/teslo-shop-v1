@@ -9,6 +9,7 @@ This is a project to simulate Tesla.com Apparel e-commerce website. The project 
 5. run dabase docker container ```docker compose up -d```
 6. Run Prisma migration ```npx prisma migrate dev```
 7. Run seed ```npm run seed```
+8. Clean browser's local storage
 6. Run project ```npm run dev```
 
 ## Project Routes Structure
