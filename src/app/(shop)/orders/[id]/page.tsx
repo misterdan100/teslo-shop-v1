@@ -1,7 +1,10 @@
-import { Title } from "@/components";
+import { getOrderById } from "@/actions";
+import { PageNotFound, Title } from "@/components";
 import { initialData } from "@/seed/seed";
+import { currencyFormat } from "@/utils";
 import clsx from "clsx";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import { IoCardOutline } from "react-icons/io5";
 
 const productsInCart = [
@@ -16,8 +19,21 @@ interface Props {
   };
 }
 
-export default function OrderByIdPage({ params }: Props) {
+export default async function OrderByIdPage({ params }: Props) {
   const { id } = params;
+  if( !id ) {
+    notFound()
+  }
+
+  const order = await getOrderById(id)
+  if( !order ) {
+    return <PageNotFound />
+  }
+
+  const { subTotal, tax, total, itemsInOrder, OrderAddress, OrderItem, isPaid, } = order
+  const { firstName, lastName, address, city, postalCode, phone } = OrderAddress!
+
+  
 
   //  Todo: verify id
 
@@ -33,8 +49,8 @@ export default function OrderByIdPage({ params }: Props) {
               className={clsx(
                 "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5",
                 {
-                  'bg-red-500': false,
-                  'bg-green-700': true
+                  'bg-red-500': !isPaid,
+                  'bg-green-700': isPaid
                 }
               )}
             >
@@ -44,13 +60,13 @@ export default function OrderByIdPage({ params }: Props) {
             </div>
 
             {/* Cart Items */}
-            {productsInCart.map((product) => (
-              <div key={product.slug} className="flex mb-5">
+            {OrderItem.map((item) => (
+              <div key={item.product.slug} className="flex mb-5">
                 <Image
-                  src={`/products/${product.images[0]}`}
+                  src={`/products/${item.product.ProductImage[0].url}`}
                   width={100}
                   height={100}
-                  alt={product.title}
+                  alt={item.product.title}
                   style={{
                     width: "100px",
                     height: "100px",
@@ -59,10 +75,10 @@ export default function OrderByIdPage({ params }: Props) {
                 />
 
                 <div>
-                  <p>{product.title}</p>
-                  <p>$ {product.price} x 3</p>
+                  <p>[{item.size}] - {item.product.title}</p>
+                  <p>{currencyFormat(item.price)} x {item.quantity}</p>
                   <p className="font-semibold">
-                    Subtotal: $ {product.price * 3}
+                    Subtotal: {currencyFormat(item.price * item.quantity)}
                   </p>
                 </div>
               </div>
@@ -74,11 +90,11 @@ export default function OrderByIdPage({ params }: Props) {
             <h2 className="text-2xl mb-2 font-semibold">Delivery Address</h2>
 
             <div className="grid  mb-10">
-              <span className="text-xl">Daniel Merchan</span>
-              <span>Av. Siempre viva 123</span>
-              <span>Medellin</span>
-              <span>Zip code: 12234</span>
-              <span>Phone: +57 310 598 2541</span>
+              <span className="text-xl">{firstName} {lastName}</span>
+              <span>{address}</span>
+              <span>{city}</span>
+              <span>Zip code: {postalCode}</span>
+              <span>Phone: {phone}</span>
             </div>
 
             {/* Divider */}
@@ -88,20 +104,20 @@ export default function OrderByIdPage({ params }: Props) {
 
             <div className="grid grid-cols-2 gap-2">
               <span>No. Products</span>
-              <span className="text-right">3 articles</span>
+              <span className="text-right">{itemsInOrder} articles</span>
 
               <span>Subtotal</span>
-              <span className="text-right">$ 100</span>
+              <span className="text-right">{currencyFormat(subTotal)}</span>
 
               <span>Shipping</span>
               <span className="text-right">Free</span>
 
               <span>Sales Tax (15%)</span>
-              <span className="text-right">$ 100</span>
+              <span className="text-right">{currencyFormat(tax)}</span>
 
               <span className="mt-5 text-2xl font-semibold">Total Due: </span>
               <span className="text-right mt-5 text-2xl font-semibold">
-                $ 200
+              {currencyFormat(total)}
               </span>
             </div>
 
@@ -110,8 +126,8 @@ export default function OrderByIdPage({ params }: Props) {
               className={clsx(
                 "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5",
                 {
-                  'bg-red-500': false,
-                  'bg-green-700': true
+                  'bg-red-500': !isPaid,
+                  'bg-green-700': isPaid
                 }
               )}
             >

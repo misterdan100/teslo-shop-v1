@@ -3,111 +3,120 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface State {
-    cart: CartProduct[]
+  cart: CartProduct[];
 
-    getTotalItems: () => number
-    getSummaryInformation: () => {
-        subTotal: number;
-        tax: number;
-        total: number;
-        itemsInCart: number;
-    }
+  getTotalItems: () => number;
+  getSummaryInformation: () => {
+    subTotal: number;
+    tax: number;
+    total: number;
+    itemsInCart: number;
+  };
 
-    addProductToCart: (product: CartProduct) => void
-    updateProductQuantity: (product: CartProduct) => void
-    removeProduct: (product: CartProduct) => void
+  addProductToCart: (product: CartProduct) => void;
+  updateProductQuantity: (product: CartProduct) => void;
+  removeProduct: (product: CartProduct) => void;
+  clearCart: () => void;
 }
 
 export const useCartStore = create<State>()(
+  // persist record state in LocalStorage
+  persist(
+    (set, get) => ({
+      cart: [],
 
-    // persist record state in LocalStorage
-    persist(
+      getTotalItems: () => {
+        const { cart } = get();
 
-        (set, get) => ({
-            cart: [],
+        return cart.reduce((total, item) => total + item.quantity, 0);
+      },
 
-            getTotalItems: () => {
-                const { cart } = get()
+      getSummaryInformation: () => {
+        const { cart } = get();
 
-                return cart.reduce( ( total, item ) => total + item.quantity, 0)
-            },
+        const subTotal = cart.reduce(
+          (total, item) => total + item.price * item.quantity,
+          0
+        );
 
-            getSummaryInformation: () => {
-                const { cart } = get()
+        const tax = subTotal * 0.15;
+        const total = subTotal + tax;
+        const itemsInCart = cart.reduce(
+          (total, item) => total + item.quantity,
+          0
+        );
 
-                const subTotal = cart.reduce( (total, item) => total + (item.price * item.quantity), 0)
+        return {
+          subTotal,
+          tax,
+          total,
+          itemsInCart,
+        };
+      },
 
-                const tax = subTotal * 0.15
-                const total = subTotal + tax
-                const itemsInCart = cart.reduce( ( total, item ) => total + item.quantity, 0)
+      updateProductQuantity: (product: CartProduct) => {
+        const { cart } = get();
 
-                return {
-                    subTotal,
-                    tax,
-                    total,
-                    itemsInCart
-                }
-            },
+        const updatedCart = cart.map((item) => {
+          if (item.id === product.id && item.size === product.size) {
+            item.quantity = product.quantity;
+            return item;
+          }
+          return item;
+        });
 
-            updateProductQuantity: (product: CartProduct) => {
-                const { cart } = get()
+        set({
+          cart: updatedCart,
+        });
+      },
+      addProductToCart: (product: CartProduct) => {
+        const { cart } = get();
 
-                const updatedCart = cart.map( item => {
-                    if(item.id === product.id && item.size === product.size) {
-                        item.quantity = product.quantity
-                        return item
-                    }
-                    return item
-                })
+        // Check if product is already in the cart with the same size
+        const productInCart = cart.some(
+          (item) => item.id === product.id && item.size === product.size
+        );
 
-                set({
-                    cart: updatedCart
-                })
-
-            },
-            addProductToCart: (product: CartProduct) => {
-                const { cart } = get()
-    
-                // Check if product is already in the cart with the same size
-                const productInCart = cart.some((item) => 
-                    item.id === product.id && item.size === product.size
-                )
-    
-                if(!productInCart) {
-                    set({
-                        cart: [...cart, product]
-                    })
-                    return
-                }
-    
-                // 2. We know the product exist in the cart by size. Encrease the product's size
-                const updatedCartProducts = cart.map(item => {
-                    if(item.id === product.id && item.size === product.size) {
-                        item.quantity = item.quantity + product.quantity
-                        return item
-                    }
-                    return item
-                })
-    
-                set({
-                    cart: updatedCartProducts
-                })
-            },
-            removeProduct: (product: CartProduct) => {
-                const { cart } = get()
-
-                const updatedCart = cart.filter( item => {
-                    if(!(item.id === product.id && item.size === product.size)) return item
-                })
-
-                set({
-                    cart: updatedCart
-                })
-            }
-        })
-        ,
-        {
-            name: 'shopping-cart',
+        if (!productInCart) {
+          set({
+            cart: [...cart, product],
+          });
+          return;
         }
-    )   
-)
+
+        // 2. We know the product exist in the cart by size. Encrease the product's size
+        const updatedCartProducts = cart.map((item) => {
+          if (item.id === product.id && item.size === product.size) {
+            item.quantity = item.quantity + product.quantity;
+            return item;
+          }
+          return item;
+        });
+
+        set({
+          cart: updatedCartProducts,
+        });
+      },
+      removeProduct: (product: CartProduct) => {
+        const { cart } = get();
+
+        const updatedCart = cart.filter((item) => {
+          if (!(item.id === product.id && item.size === product.size))
+            return item;
+        });
+
+        set({
+          cart: updatedCart,
+        });
+      },
+      clearCart: () => {
+        set({
+          cart: [],
+        });
+      },
+    }),
+    {
+      name: "shopping-cart",
+    }
+  )
+);

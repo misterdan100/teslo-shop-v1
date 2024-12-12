@@ -1,18 +1,23 @@
 'use client'
 
+import { placeOrder } from "@/actions"
 import { useAddressStore, useCartStore } from "@/store"
 import { currencyFormat } from "@/utils"
 import { sleep } from "@/utils/sleep"
 import clsx from "clsx"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export const PlaceOrder = () => {
+    const router = useRouter()
     const [loaded, setLoaded] = useState(false)
     const [isPlacingOrder, setIsPlacingOrder] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
 
     const address = useAddressStore( state => state.address )
 
+    const clearCart = useCartStore( state => state.clearCart)
     const cart = useCartStore( state => state.cart)
     const getSummaryInformation = useCartStore((state) => state.getSummaryInformation);
     const { itemsInCart, subTotal, tax, total } = getSummaryInformation()
@@ -24,6 +29,7 @@ export const PlaceOrder = () => {
 
     const onPlaceOrder = async () => {
         setIsPlacingOrder(true)
+        setErrorMessage('')
 
         const productsToOrder = cart.map( product => ({
             productId: product.id,
@@ -31,7 +37,19 @@ export const PlaceOrder = () => {
             size: product.size
         }))
 
+        const resp = await placeOrder(productsToOrder, address)
+        if( !resp.ok ) {
+          setIsPlacingOrder(false)
+          setErrorMessage(resp.message)
+          return
+        }
+
+        //* in this point order is success
         setIsPlacingOrder(false)
+        clearCart()
+        router.replace(`/orders/${resp.order?.id}`)
+
+
     }
   
 
@@ -84,9 +102,11 @@ export const PlaceOrder = () => {
 
               </p>
 
-              {/* <p
+              { errorMessage && (
+                <p
                 className="text-red-500 mb-2"
-              >Error to create order</p> */}
+                >{errorMessage}</p>
+              )}
 
               <button 
 
