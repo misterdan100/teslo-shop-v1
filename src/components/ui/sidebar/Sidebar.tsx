@@ -21,12 +21,12 @@ export const Sidebar = () => {
       {isSlideMenuOpen && (
         <>
           {/* Black Background */}
-          <div className="fixed top-0 left-0 w-screen h-screen z-10 bg-black opacity-30" />
+          <div className="top-0 left-0 z-10 fixed bg-black opacity-30 w-screen h-screen" />
 
           {/* Blur */}
           <div
             onClick={closeSideMenu}
-            className="fade-in fixed top-0 left-0 w-screen h-screen z-10 backdrop-filter backdrop-blur-sm"
+            className="top-0 left-0 z-10 fixed backdrop-filter backdrop-blur-sm w-screen h-screen fade-in"
           />
         </>
       )}
@@ -34,7 +34,7 @@ export const Sidebar = () => {
       {/* Sidemenu */}
       <nav
         className={clsx(
-          "fixed p-5 right-0 top-0 w-[500px] h-screen bg-white z-20 shadow-2xl transform transition-all duration-300",
+          "top-0 right-0 z-20 fixed bg-white shadow-2xl p-5 w-[500px] h-screen transition-all duration-300 transform",
           {
             "translate-x-full": !isSlideMenuOpen,
           }
@@ -42,17 +42,17 @@ export const Sidebar = () => {
       >
         <IoCloseOutline
           size={50}
-          className="absolute top-5 right-5 cursor-pointer text-gray-500"
+          className="top-5 right-5 absolute text-gray-500 cursor-pointer"
           onClick={closeSideMenu}
         />
 
         {/* Inputs */}
         <div className="relative mt-14">
-          <IoSearchOutline size={20} className="absolute top-2 left-2" />
+          <IoSearchOutline size={20} className="top-2 left-2 absolute" />
           <input
             type="text"
             placeholder="Search"
-            className="w-full bg-gray-50 rounded pl-10 py-1 pr-10 border-b-2 text-xl border-gray-200 focus:outline-none focus:border-blue-500 transition-all"
+            className="bg-gray-50 py-1 pr-10 pl-10 border-gray-200 border-b-2 focus:border-blue-500 rounded focus:outline-none w-full text-xl transition-all"
           />
         </div>
 
@@ -62,7 +62,7 @@ export const Sidebar = () => {
             {/* Menu Options */}
             <Link
               href="/profile"
-              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded-md transition-all"
+              className="flex items-center hover:bg-gray-100 mt-10 p-2 rounded-md transition-all"
               onClick={() => closeSideMenu()}
             >
               <IoPersonOutline size={30} />
@@ -70,15 +70,15 @@ export const Sidebar = () => {
             </Link>
 
             <Link
-              href="/"
-              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded-md transition-all"
+              href="/orders"
+              className="flex items-center hover:bg-gray-100 mt-10 p-2 rounded-md transition-all"
             >
               <IoTicketOutline size={30} />
               <span className="ml-3 text-xl">Orders</span>
             </Link>
 
             <button
-              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded-md transition-all"
+              className="flex items-center hover:bg-gray-100 mt-10 p-2 rounded-md transition-all"
               onClick={() => logout()}
             >
               <IoLogOutOutline size={30} />
@@ -88,7 +88,7 @@ export const Sidebar = () => {
         ) : (
           <Link
             href="/auth/login"
-            className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded-md transition-all"
+            className="flex items-center hover:bg-gray-100 mt-10 p-2 rounded-md transition-all"
             onClick={() => closeSideMenu()}
           >
             <IoLogInOutline size={30} />
@@ -97,14 +97,14 @@ export const Sidebar = () => {
         )}
 
         {/* Line Separate */}
-        <div className="w-full h-px bg-gray-200 my-10" />
+        <div className="bg-gray-200 my-10 w-full h-px" />
 
         {/* Options for admin */}
         { isAdmin && (
           <>
             <Link
               href="/"
-              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded-md transition-all"
+              className="flex items-center hover:bg-gray-100 mt-10 p-2 rounded-md transition-all"
             >
               <IoShirtOutline size={30} />
               <span className="ml-3 text-xl">Products</span>
@@ -112,7 +112,7 @@ export const Sidebar = () => {
 
             <Link
               href="/"
-              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded-md transition-all"
+              className="flex items-center hover:bg-gray-100 mt-10 p-2 rounded-md transition-all"
             >
               <IoTicketOutline size={30} />
               <span className="ml-3 text-xl">Orders</span>
@@ -120,7 +120,7 @@ export const Sidebar = () => {
 
             <Link
               href="/"
-              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded-md transition-all"
+              className="flex items-center hover:bg-gray-100 mt-10 p-2 rounded-md transition-all"
             >
               <IoPeopleOutline size={30} />
               <span className="ml-3 text-xl">Users</span>
