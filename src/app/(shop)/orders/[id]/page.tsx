@@ -1,5 +1,5 @@
 import { getOrderById } from "@/actions";
-import { PageNotFound, Title } from "@/components";
+import { PageNotFound, PayPalButton, Title } from "@/components";
 import { initialData } from "@/seed/seed";
 import { currencyFormat } from "@/utils";
 import clsx from "clsx";
@@ -42,12 +42,12 @@ export default async function OrderByIdPage({ params }: Props) {
       <div className="flex flex-col w-[1000px]">
         <Title title={`Order #${id}`} />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+        <div className="gap-10 grid grid-cols-1 sm:grid-cols-2">
           {/* Cart */}
           <div className="flex flex-col">
             <div
               className={clsx(
-                "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5",
+                "flex items-center mb-5 px-3.5 py-2 rounded-lg font-bold text-white text-xs",
                 {
                   'bg-red-500': !isPaid,
                   'bg-green-700': isPaid
@@ -61,7 +61,10 @@ export default async function OrderByIdPage({ params }: Props) {
 
             {/* Cart Items */}
             {OrderItem.map((item) => (
-              <div key={item.product.slug} className="flex mb-5">
+              <div 
+                key={`${item.product.slug}-${item.size}`} 
+                className="flex mb-5"
+              >
                 <Image
                   src={`/products/${item.product.ProductImage[0].url}`}
                   width={100}
@@ -86,10 +89,10 @@ export default async function OrderByIdPage({ params }: Props) {
           </div>
 
           {/* Summary / Checkout */}
-          <div className="bg-white rounded-xl shadow-xl p-7 self-start">
-            <h2 className="text-2xl mb-2 font-semibold">Delivery Address</h2>
+          <div className="self-start bg-white shadow-xl p-7 rounded-xl">
+            <h2 className="mb-2 font-semibold text-2xl">Delivery Address</h2>
 
-            <div className="grid  mb-10">
+            <div className="grid mb-10">
               <span className="text-xl">{firstName} {lastName}</span>
               <span>{address}</span>
               <span>{city}</span>
@@ -98,11 +101,11 @@ export default async function OrderByIdPage({ params }: Props) {
             </div>
 
             {/* Divider */}
-            <div className="w-full h-0.5 rounded bg-gray-200 mb-10" />
+            <div className="bg-gray-200 mb-10 rounded w-full h-0.5" />
 
-            <h2 className="text-2xl mb-2 font-semibold">Order Summary</h2>
+            <h2 className="mb-2 font-semibold text-2xl">Order Summary</h2>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="gap-2 grid grid-cols-2">
               <span>No. Products</span>
               <span className="text-right">{itemsInOrder} articles</span>
 
@@ -115,16 +118,22 @@ export default async function OrderByIdPage({ params }: Props) {
               <span>Sales Tax (15%)</span>
               <span className="text-right">{currencyFormat(tax)}</span>
 
-              <span className="mt-5 text-2xl font-semibold">Total Due: </span>
-              <span className="text-right mt-5 text-2xl font-semibold">
+              <span className="mt-5 font-semibold text-2xl">Total Due: </span>
+              <span className="mt-5 font-semibold text-2xl text-right">
               {currencyFormat(total)}
               </span>
             </div>
 
             <div className="mt-5 mb-2 w-full">
-            <div
+            
+              <PayPalButton 
+                orderId={order.id}
+                amount={order.total}
+              />
+
+              {/* <div
               className={clsx(
-                "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5",
+                "flex items-center mb-5 px-3.5 py-2 rounded-lg font-bold text-white text-xs",
                 {
                   'bg-red-500': !isPaid,
                   'bg-green-700': isPaid
@@ -132,9 +141,8 @@ export default async function OrderByIdPage({ params }: Props) {
               )}
             >
               <IoCardOutline size={30} />
-              {/* <span className="mx-2">Pending payment</span> */}
               <span className="mx-2">Paid order</span>
-            </div>
+            </div> */}
 
             </div>
           </div>

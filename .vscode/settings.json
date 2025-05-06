@@ -7,5 +7,15 @@
         "sash.hoverBorder": "#fbed80",
         "tab.activeBorder": "#fbed80"
     },
-    "peacock.color": "#f9e64f"
+    "peacock.color": "#f9e64f",
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": true,
+        "scminput": false,
+        "javascript": true,
+        "typescript": false,
+        "typescriptreact": false,
+        "prisma": false
+    }
 }
