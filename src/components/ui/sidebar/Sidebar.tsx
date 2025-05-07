@@ -72,6 +72,7 @@ export const Sidebar = () => {
             <Link
               href="/orders"
               className="flex items-center hover:bg-gray-100 mt-10 p-2 rounded-md transition-all"
+              onClick={() => closeSideMenu()}
             >
               <IoTicketOutline size={30} />
               <span className="ml-3 text-xl">Orders</span>
@@ -103,24 +104,27 @@ export const Sidebar = () => {
         { isAdmin && (
           <>
             <Link
-              href="/"
+              href="/admin/products"
               className="flex items-center hover:bg-gray-100 mt-10 p-2 rounded-md transition-all"
+              onClick={() => closeSideMenu()}
             >
               <IoShirtOutline size={30} />
               <span className="ml-3 text-xl">Products</span>
             </Link>
 
             <Link
-              href="/"
+              href="/admin/orders"
               className="flex items-center hover:bg-gray-100 mt-10 p-2 rounded-md transition-all"
+              onClick={() => closeSideMenu()}
             >
               <IoTicketOutline size={30} />
               <span className="ml-3 text-xl">Orders</span>
             </Link>
 
             <Link
-              href="/"
+              href="/admin/users"
               className="flex items-center hover:bg-gray-100 mt-10 p-2 rounded-md transition-all"
+              onClick={() => closeSideMenu()}
             >
               <IoPeopleOutline size={30} />
               <span className="ml-3 text-xl">Users</span>

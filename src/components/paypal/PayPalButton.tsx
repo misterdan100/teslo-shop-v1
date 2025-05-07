@@ -1,21 +1,23 @@
 "use client";
 
 import { paypalCheckPayment, setTransactionId } from "@/actions";
-import { CreateOrderActions, CreateOrderData, OnApproveActions, OnApproveData } from "@paypal/paypal-js";
 import {
-  PayPalButtons,
-  usePayPalScriptReducer,
-} from "@paypal/react-paypal-js";
+  CreateOrderActions,
+  CreateOrderData,
+  OnApproveActions,
+  OnApproveData,
+} from "@paypal/paypal-js";
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
 interface Props {
-  orderId: string
-  amount: number
+  orderId: string;
+  amount: number;
 }
 
 export const PayPalButton = ({ orderId, amount }: Props) => {
   const [{ isPending }] = usePayPalScriptReducer();
 
-  const roundedAmount =  ((Math.round( amount * 100)) / 100).toString()
+  const roundedAmount = (Math.round(amount * 100) / 100).toString();
 
   if (isPending) {
     return (
@@ -26,42 +28,47 @@ export const PayPalButton = ({ orderId, amount }: Props) => {
     );
   }
 
-  const createOrder = async (data: CreateOrderData, actions: CreateOrderActions): Promise<string> => {
+  const createOrder = async (
+    data: CreateOrderData,
+    actions: CreateOrderActions
+  ): Promise<string> => {
     const transactionId = await actions.order.create({
-        
-        intent: 'CAPTURE', // Add the intent here
-        purchase_units: [
-            {
-              invoice_id: orderId,
-              amount: {
-                  currency_code: 'USD', // Add the currency code here
-                  value: roundedAmount,
-              }
-            }
-        ]
-    })
+      intent: "CAPTURE", // Add the intent here
+      purchase_units: [
+        {
+          invoice_id: orderId,
+          amount: {
+            currency_code: "USD", // Add the currency code here
+            value: roundedAmount,
+          },
+        },
+      ],
+    });
 
-    const { ok } = await setTransactionId(orderId, transactionId)
+    const { ok } = await setTransactionId(orderId, transactionId);
 
-    if(!ok) {
-      throw new Error("Order could't be updated")
+    if (!ok) {
+      throw new Error("Order could't be updated");
     }
 
-    return transactionId
-  }
+    return transactionId;
+  };
 
   const onApprove = async (data: OnApproveData, actions: OnApproveActions) => {
-    const details = await actions.order?.capture()
-    if(!details) {
-      return
+    const details = await actions.order?.capture();
+    if (!details) {
+      return;
     }
 
-    await paypalCheckPayment( details.id || '' )
+    await paypalCheckPayment(details.id || "");
+  };
 
-  }
-
-  return <PayPalButtons 
-    createOrder={createOrder}
-    onApprove={ onApprove }
-  />;
+  return (
+    <div className="z-0 relative">
+      <PayPalButtons 
+        createOrder={createOrder} 
+        onApprove={onApprove}
+      />
+    </div>
+  );
 };
