@@ -1,5 +1,5 @@
 import { getOrderById } from "@/actions";
-import { PageNotFound, PayPalButton, Title } from "@/components";
+import { OrderStatus, PageNotFound, PayPalButton, Title } from "@/components";
 import { initialData } from "@/seed/seed";
 import { currencyFormat } from "@/utils";
 import clsx from "clsx";
@@ -33,10 +33,6 @@ export default async function OrderByIdPage({ params }: Props) {
   const { subTotal, tax, total, itemsInOrder, OrderAddress, OrderItem, isPaid, } = order
   const { firstName, lastName, address, city, postalCode, phone } = OrderAddress!
 
-  
-
-  //  Todo: verify id
-
   return (
     <div className="flex justify-center items-center mb-72 px-10 sm:px-0">
       <div className="flex flex-col w-[1000px]">
@@ -45,19 +41,9 @@ export default async function OrderByIdPage({ params }: Props) {
         <div className="gap-10 grid grid-cols-1 sm:grid-cols-2">
           {/* Cart */}
           <div className="flex flex-col">
-            <div
-              className={clsx(
-                "flex items-center mb-5 px-3.5 py-2 rounded-lg font-bold text-white text-xs",
-                {
-                  'bg-red-500': !isPaid,
-                  'bg-green-700': isPaid
-                }
-              )}
-            >
-              <IoCardOutline size={30} />
-              {/* <span className="mx-2">Pending payment</span> */}
-              <span className="mx-2">Paid order</span>
-            </div>
+            <OrderStatus 
+              isPaid={isPaid}
+            />
 
             {/* Cart Items */}
             {OrderItem.map((item) => (
@@ -126,10 +112,16 @@ export default async function OrderByIdPage({ params }: Props) {
 
             <div className="mt-5 mb-2 w-full">
             
+            {isPaid ? (
+              <OrderStatus 
+              isPaid={isPaid}
+            />
+            ) : (
               <PayPalButton 
                 orderId={order.id}
                 amount={order.total}
               />
+            )}
 
               {/* <div
               className={clsx(

@@ -1,4 +1,5 @@
 export const revalidate = 0; // to force render every time page is request
+export const dynamic = 'force-dynamic' // Next.js always revalidate, no cache
 
 // https://tailwindcomponents.com/component/hoverable-table
 import { getOrdersByUser } from '@/actions';

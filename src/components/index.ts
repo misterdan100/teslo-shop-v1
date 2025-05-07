@@ -19,3 +19,5 @@ export * from './ui/sidebar/Sidebar'
 export * from './ui/pagination/Pagination'
 
 export * from './paypal/PayPalButton'
+
+export * from './orders/OrderStatus'

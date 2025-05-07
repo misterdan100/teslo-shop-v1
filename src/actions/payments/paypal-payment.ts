@@ -2,6 +2,7 @@
 
 import { Paypal, PaypalOrderStatusResponse } from "@/interfaces";
 import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export const paypalCheckPayment = async (paypalTransactionId: string) => {
   try {
@@ -27,7 +28,7 @@ export const paypalCheckPayment = async (paypalTransactionId: string) => {
     }
 
     const { status, purchase_units } = res
-    // const {  } = purchase_units[0]
+    const { invoice_id: orderId } = purchase_units[0]
 
     console.log({status, purchase_units})
 
@@ -43,14 +44,22 @@ export const paypalCheckPayment = async (paypalTransactionId: string) => {
       console.log({status, purchase_units})
 
       const res = await prisma.order.update({
-        where: {id: 'put the real id'},
+        where: {id: orderId},
         data: {
           isPaid: true,
           paidAt: new Date()
         }
       })
 
-      //Todo: Revalidar un path
+      console.log(res)
+
+      //Todo: Revalidar un path with next.js
+      revalidatePath(`/orders/${orderId}`)
+
+      return {
+        ok: true
+      }
+
       
     } catch (error) {
       console.log(error)
