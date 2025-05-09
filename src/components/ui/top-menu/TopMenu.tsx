@@ -23,7 +23,7 @@ export const TopMenu = () => {
 
   return (
     <nav 
-        className="flex px-5 justify-between items-center w-full"
+        className="flex justify-between items-center px-5 w-full"
     >
         {/* Logo */}
         <div>
@@ -33,7 +33,7 @@ export const TopMenu = () => {
                 <span 
                     className={`${fontClass} antialiased font-bold`}
                 >
-                    Teslo
+                    Mister
                 </span>
                 <span> | Shop</span>
             </Link>
@@ -43,15 +43,15 @@ export const TopMenu = () => {
         <div className="hidden sm:block">
             <Link
                 href='/gender/men'
-                className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
+                className="hover:bg-gray-100 m-2 p-2 rounded-md transition-all"
             >Men</Link>
             <Link
                 href='/gender/women'
-                className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
+                className="hover:bg-gray-100 m-2 p-2 rounded-md transition-all"
             >Women</Link>
             <Link
                 href='/gender/kid'
-                className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
+                className="hover:bg-gray-100 m-2 p-2 rounded-md transition-all"
             >Kids</Link>
         </div>
 
@@ -75,14 +75,14 @@ export const TopMenu = () => {
                 >
                     {
                         (loaded && getTotalItems > 0) && (
-                            <span className="absolute text-xs rounded-full px-1 font-bold -top-2 bg-blue-700 text-white -right-2">{getTotalItems}</span>
+                            <span className="-top-2 -right-2 absolute bg-blue-700 px-1 rounded-full font-bold text-white text-xs">{getTotalItems}</span>
                         )
                     }
                     <IoCartOutline className="w-5 h-5"/>
                 </div>
             </Link>
             <button
-                className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
+                className="hover:bg-gray-100 m-2 p-2 rounded-md transition-all"
                 onClick={openSideMenu}
             >Menu</button>
 

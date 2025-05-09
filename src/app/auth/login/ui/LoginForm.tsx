@@ -1,6 +1,6 @@
 'use client'
 
-import { authenticate } from "@/actions";
+import { authenticate, loginDemoUser } from "@/actions";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,6 @@ import { IoInformationOutline } from "react-icons/io5";
 
 export default function LoginForm() {
   const [state, dispatch] = useFormState(authenticate, undefined);
-  const router = useRouter()
   
   useEffect(() => {
     if(state === 'Success') {
@@ -18,6 +17,16 @@ export default function LoginForm() {
       window.location.replace('/')
     }
   }, [state])
+
+  const handleDemoUser = async () => {
+    
+    const res = await loginDemoUser()
+
+    if(res === 'Success') {
+      window.location.replace('/')
+      return
+    }
+  }
   
   return (
     <form
@@ -27,7 +36,7 @@ export default function LoginForm() {
 
         <label htmlFor="email">Email</label>
         <input
-          className="px-5 py-2 border bg-gray-200 rounded mb-5"
+          className="bg-gray-200 mb-5 px-5 py-2 border rounded"
           type="email" 
           name="email"
         />
@@ -35,7 +44,7 @@ export default function LoginForm() {
 
         <label htmlFor="email">Password</label>
         <input
-          className="px-5 py-2 border bg-gray-200 rounded mb-5"
+          className="bg-gray-200 mb-5 px-5 py-2 border rounded"
           type="password"
           name="password"
         />
@@ -49,14 +58,14 @@ export default function LoginForm() {
         </button> */}
 
         <div
-        className="flex h-8 items-end space-x-1"
+        className="flex items-end space-x-1 h-8"
         aria-live="polite"
         aria-atomic="true"
       >
         {state === "CredentialsSignIn" || state === "UnknownError"  && (
           <div className="flex flex-row mb-2">
-            <IoInformationOutline className="h-5 w-5 text-red-500" />
-            <p className="text-sm text-red-500">
+            <IoInformationOutline className="w-5 h-5 text-red-500" />
+            <p className="text-red-500 text-sm">
               Credentials not valid
             </p>
           </div>
@@ -65,17 +74,25 @@ export default function LoginForm() {
 
       <LoginButton />
 
+      <button 
+        type="button" 
+        onClick={handleDemoUser}
+        className='bg-blue-300 hover:bg-blue-400 mt-4 px-4 py-2 rounded text-black transition-all'
+        >
+        Demo User
+      </button>
+
 
         {/* divisor l ine */ }
         <div className="flex items-center my-5">
-          <div className="flex-1 border-t border-gray-500"></div>
+          <div className="flex-1 border-gray-500 border-t"></div>
           <div className="px-2 text-gray-800">O</div>
-          <div className="flex-1 border-t border-gray-500"></div>
+          <div className="flex-1 border-gray-500 border-t"></div>
         </div>
 
         <Link
           href="/auth/new-account" 
-          className="btn-secondary text-center">
+          className="text-center btn-secondary">
           Create Account
         </Link>
 

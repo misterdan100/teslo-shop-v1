@@ -17,11 +17,23 @@ export default async function ProfilePage() {
         <Title 
             title="Profile"
         />
-      <p>{session.user?.name}</p>
-      <p>{session.user?.email}</p>
-      <p>{session.user?.id}</p>
-      <p>{session.user?.image}</p>
-      <p>{session.user?.role}</p>
+        <div className="flex gap-2">
+          <p className="font-bold">Name: </p>
+          <p>{session.user?.name} </p>
+        </div>
+        <div className="flex gap-2">
+          <p className="font-bold">E-mail: </p>
+          <p>{session.user?.email} </p>
+        </div>
+        <div className="flex gap-2">
+          <p className="font-bold">User ID: </p>
+          <p>{session.user?.id} </p>
+        </div>
+        <div className="flex gap-2">
+          <p className="font-bold">Role: </p>
+          <p>{session.user?.role} </p>
+        </div>
+
     </div>
   )
 }

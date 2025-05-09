@@ -66,7 +66,7 @@ export const Sidebar = () => {
               onClick={() => closeSideMenu()}
             >
               <IoPersonOutline size={30} />
-              <span className="ml-3 text-xl">Profile</span>
+              <span className="ml-3 text-gray-600 text-xl"><span className="font-bold text-black">{session.user.name.split(' ')[0]}</span> Profile</span>
             </Link>
 
             <Link
@@ -103,6 +103,9 @@ export const Sidebar = () => {
         {/* Options for admin */}
         { isAdmin && (
           <>
+          <span
+            className="ml-4 font-bold text-lg"
+          >Admin Section</span>
             <Link
               href="/admin/products"
               className="flex items-center hover:bg-gray-100 mt-10 p-2 rounded-md transition-all"
