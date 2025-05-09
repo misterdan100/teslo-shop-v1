@@ -51,7 +51,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
     if(address.firstName) {
       reset(address)
     }
-  }, [])
+  }, [address, reset])
 
   const onSubmit = async ( data: FormInputs ) => {
       const { rememberAddress, ...rest } = data
@@ -69,13 +69,13 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="grid grid-cols-1 gap-2 sm:gap-5 sm:grid-cols-2"
+      className="gap-2 sm:gap-5 grid grid-cols-1 sm:grid-cols-2"
     >
       <div className="flex flex-col mb-2">
         <span>Name</span>
         <input
           type="text"
-          className="p-2 border rounded-md bg-gray-200"
+          className="bg-gray-200 p-2 border rounded-md"
           {...register("firstName", { required: true })}
         />
       </div>
@@ -84,7 +84,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
         <span>Last names</span>
         <input
           type="text"
-          className="p-2 border rounded-md bg-gray-200"
+          className="bg-gray-200 p-2 border rounded-md"
           {...register("lastName", { required: true })}
         />
       </div>
@@ -93,7 +93,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
         <span>Address</span>
         <input
           type="text"
-          className="p-2 border rounded-md bg-gray-200"
+          className="bg-gray-200 p-2 border rounded-md"
           {...register("address", { required: true })}
         />
       </div>
@@ -102,7 +102,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
         <span>Address 2 (optional)</span>
         <input
           type="text"
-          className="p-2 border rounded-md bg-gray-200"
+          className="bg-gray-200 p-2 border rounded-md"
           {...register("address2")}
         />
       </div>
@@ -111,7 +111,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
         <span>Zip code</span>
         <input
           type="text"
-          className="p-2 border rounded-md bg-gray-200"
+          className="bg-gray-200 p-2 border rounded-md"
           {...register("postalCode", { required: true })}
         />
       </div>
@@ -120,7 +120,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
         <span>City</span>
         <input
           type="text"
-          className="p-2 border rounded-md bg-gray-200"
+          className="bg-gray-200 p-2 border rounded-md"
           {...register("city", { required: true })}
         />
       </div>
@@ -128,7 +128,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
       <div className="flex flex-col mb-2">
         <span>Country</span>
         <select
-          className="p-2 border rounded-md bg-gray-200"
+          className="bg-gray-200 p-2 border rounded-md"
           {...register("country", { required: true })}
         >
           <option value=""> Select </option>
@@ -147,29 +147,29 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
         <span>Phone</span>
         <input
           type="text"
-          className="p-2 border rounded-md bg-gray-200"
+          className="bg-gray-200 p-2 border rounded-md"
           {...register("phone", { required: true })}
         />
       </div>
 
-      <div className="flex flex-col mb-2 sm:mt-1">
+      <div className="flex flex-col sm:mt-1 mb-2">
         <div className="inline-flex items-center mb-2">
           <label
-            className="relative flex cursor-pointer items-center rounded-full p-3"
+            className="relative flex items-center p-3 rounded-full cursor-pointer"
             htmlFor="checkbox"
           >
             <input
               type="checkbox"
-              className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-blue-500 hover:before:opacity-10 border-gray-500"
+              className="peer before:block before:top-2/4 before:left-2/4 before:absolute relative before:bg-blue-gray-500 checked:before:bg-blue-500 checked:bg-blue-500 before:opacity-0 hover:before:opacity-10 border border-gray-500 border-blue-gray-200 checked:border-blue-500 rounded-md before:rounded-full w-5 before:w-12 h-5 before:h-12 transition-all before:transition-opacity before:-translate-x-2/4 before:-translate-y-2/4 appearance-none cursor-pointer before:content['']"
               id="checkbox"
               // checked={remeber}
               // onChange={() => setRemeber(!remeber)}
               {...register("rememberAddress") }
             />
-            <div className="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+            <div className="top-2/4 left-2/4 absolute opacity-0 peer-checked:opacity-100 text-white transition-opacity -translate-x-2/4 -translate-y-2/4 pointer-events-none">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-3.5 w-3.5"
+                className="w-3.5 h-3.5"
                 viewBox="0 0 20 20"
                 fill="currentColor"
                 stroke="currentColor"
@@ -187,7 +187,7 @@ export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
           <span>Remember address</span>
         </div>
 
-        <div className="flex flex-col mb-2 sm:mt-5">
+        <div className="flex flex-col sm:mt-5 mb-2">
           <button
             type="submit"
             disabled={!isValid}

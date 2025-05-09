@@ -2,7 +2,11 @@
 
 import prisma from "@/lib/prisma";
 import { Gender, Product, Size } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config( process.env.CLOUDINARY_URL ?? '')
 
 const productSchema = z.object({
   id: z.string().uuid().optional().nullable(),
@@ -47,6 +51,7 @@ export const createUpdateProduct = async (formData: FormData) => {
       const tagsArray = rest.tags
         .split(",")
         .map((tag) => tag.trim().toLowerCase());
+
       if (id) {
         // update
         product = await prisma.product.update({
@@ -61,6 +66,7 @@ export const createUpdateProduct = async (formData: FormData) => {
             },
           },
         });
+
       } else {
         // create product
         product = await prisma.product.create({
@@ -76,12 +82,31 @@ export const createUpdateProduct = async (formData: FormData) => {
         });
       }
 
+      // Process to load images
+      // iterate images and save them
+      if( formData.getAll('images')) {
+        const images = await uploadImages(formData.getAll('images') as File[])
+
+        if(!images) {
+            throw new Error("Images couldn't be loaded, rolling back")
+        }
+
+        await prisma.productImage.createMany({
+            data: images.map( image => ({
+                url: image!,
+                productId: product.id
+            }))
+        })
+      }
+
       return {
           product,
         };
     });
     
-    //Todo: revalidate path
+    revalidatePath(`/admin/products`)
+    revalidatePath(`/admin/product/${product.slug}`)
+    revalidatePath(`/products/${product.slug}`)
 
 
     return {
@@ -95,3 +120,35 @@ export const createUpdateProduct = async (formData: FormData) => {
     };
   }
 };
+
+
+const uploadImages = async ( images: File[]) => {
+    try {
+        // create promises array
+        const uploadPromises = images.map( async (image) => {
+
+            try {
+                // convert the image in a string to load to cloudinary
+                const buffer = await image.arrayBuffer();
+                const base64Image = Buffer.from(buffer).toString('base64')
+                
+                // load image to cloudinary and return a image url
+                return cloudinary.uploader.upload(`data:image/png;base64,${ base64Image }`)
+                .then( r => r.secure_url )
+                
+            } catch (error) {
+                console.log(error)
+                return null
+            }
+        })
+
+        // return an images url array of strings
+        const uploadedImages = await Promise.all(uploadPromises)
+
+        return uploadedImages
+
+    } catch (error) {
+        console.log(error)
+        return null
+    }
+}

@@ -23,7 +23,7 @@ export const OrderSummary = () => {
     if(productsInCart === 0) {
         redirect('/empty')
     }
-  }, [cart])
+  }, [cart, productsInCart])
 
   if (!loaded) return <p>Loading...</p>;
 
@@ -38,8 +38,8 @@ export const OrderSummary = () => {
       <span>Taxes (15%)</span>
       <span className="text-right">{currencyFormat(tax)}</span>
 
-      <span className="mt-5 text-2xl font-semibold">Total: </span>
-      <span className="text-right mt-5 text-2xl font-semibold">
+      <span className="mt-5 font-semibold text-2xl">Total: </span>
+      <span className="mt-5 font-semibold text-2xl text-right">
         {currencyFormat(total)}
       </span>
     </div>

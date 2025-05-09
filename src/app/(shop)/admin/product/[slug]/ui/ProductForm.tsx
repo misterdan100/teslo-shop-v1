@@ -1,7 +1,8 @@
 "use client";
 
-import { createUpdateProduct } from "@/actions";
-import { Category, Product, ProductImage } from "@/interfaces";
+import { createUpdateProduct, deleteProductImage } from "@/actions";
+import { ProductImage } from "@/components";
+import { Category, Product, ProductImage as TProductImages } from "@/interfaces";
 import clsx from "clsx";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -10,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { IoReload } from "react-icons/io5";
 
 interface Props {
-  product: Partial<Product> & { ProductImage?: ProductImage[] };
+  product: Partial<Product> & { ProductImage?: TProductImages[] };
   categories: Category[];
 }
 
@@ -27,7 +28,7 @@ interface FormInputs {
   gender: "men" | "women" | "kid" | "unisex";
   categoryId: string;
 
-  //Todo: Images type
+  images?: FileList
 }
 
 export const ProductForm = ({ product, categories }: Props) => {
@@ -46,6 +47,7 @@ export const ProductForm = ({ product, categories }: Props) => {
       ...product,
       tags: product.tags?.join(", "),
       sizes: product.sizes ?? [],
+      images: undefined
     },
   });
 
@@ -63,7 +65,7 @@ export const ProductForm = ({ product, categories }: Props) => {
     setLoading(true);
     const formData = new FormData();
 
-    const { ...productToSave } = data;
+    const { images, ...productToSave } = data;
     if (product.id) {
       formData.append("id", product.id ?? "");
     }
@@ -77,6 +79,12 @@ export const ProductForm = ({ product, categories }: Props) => {
     formData.append("categoryId", productToSave.categoryId);
     formData.append("gender", productToSave.gender);
 
+    if( images ) {
+      for( let i = 0; i < images.length; i++) {
+        formData.append('images', images[i])
+      }
+    }
+
     const { ok, product: updatedProduct } = await createUpdateProduct(formData);
     setLoading(false);
 
@@ -86,10 +94,7 @@ export const ProductForm = ({ product, categories }: Props) => {
 
     router.replace(`/admin/product/${updatedProduct?.slug}`)
 
-   // todo: 18 video a minuto 3
-   // todo: 18 video a minuto 3
-   // todo: 18 video a minuto 3
-   // todo: 18 video a minuto 3
+
     
   };
 
@@ -223,17 +228,18 @@ export const ProductForm = ({ product, categories }: Props) => {
             <span>Photos</span>
             <input
               type="file"
+              { ...register('images') }
               multiple
               className="bg-gray-200 p-2 border rounded-md"
-              accept="image/png, image/jpeg"
+              accept="image/png, image/jpeg, image/avif"
             />
           </div>
 
           <div className="gap-3 grid grid-cols-1 sm:grid-cols-3">
             {product.ProductImage?.map((image) => (
               <div key={image.id} className="">
-                <Image
-                  src={`/products/${image.url}`}
+                <ProductImage
+                  src={image.url}
                   alt={`${product.title} image ${image.id}`}
                   width={300}
                   height={300}
@@ -241,7 +247,7 @@ export const ProductForm = ({ product, categories }: Props) => {
                 />
                 <button
                   type="button"
-                  onClick={() => console.log({ imageId: image.id })}
+                  onClick={() => deleteProductImage(image.id, image.url)}
                   className="rounded-b-xl w-full btn-danger"
                 >
                   Delete
