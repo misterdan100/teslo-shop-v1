@@ -1,6 +1,6 @@
 "use client";
 
-import { QuantitySelector } from "@/components";
+import { ProductImage, QuantitySelector } from "@/components";
 import { CartProduct, Product } from "@/interfaces";
 import { useCartStore } from "@/store";
 import Image from "next/image";
@@ -31,8 +31,8 @@ export const ProductsInCart = () => {
       {loaded &&
         productsInCart.map((product) => (
           <div key={product.slug + product.size} className="flex mb-5">
-            <Image
-              src={`/products/${product.images}`}
+            <ProductImage
+              src={product.images}
               width={100}
               height={100}
               alt={product.title}
@@ -40,7 +40,7 @@ export const ProductsInCart = () => {
                 width: "100px",
                 height: "100px",
               }}
-              className="mr-5 rounded"
+              className="mr-5 rounded object-cover"
             />
 
             <div>
@@ -52,7 +52,7 @@ export const ProductsInCart = () => {
               />
 
               <button 
-                className="underline mt-3"
+                className="mt-3 underline"
                 onClick={() => removeProduct(product)}
               >Remove</button>
             </div>
