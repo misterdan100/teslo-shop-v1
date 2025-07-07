@@ -10,9 +10,11 @@
 
 Full-stack web application simulating an e-commerce site inspired by Tesla Apparel, designed for managing product catalogs, users, and purchasing processes. It allows users to browse, filter by category, manage shopping carts and orders, featuring secure authentication and a robust architecture using Next.js, Typescript, Zustand, Prisma, Docker, and PostgreSQL.
 
-## ✅ Demo
+## ✅ Live Demo
 
-[![Demo](https://img.shields.io/badge/Demo-Click%20Here-blue.svg)](https://teslo-shop-v1.vercel.app/)
+[https://mister-shop.vercel.app/](https://mister-shop.vercel.app/)
+
+- Use **Demo** button or **Sign Up** with email and password
 
 ## ✨ Key Features
 
